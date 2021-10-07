@@ -33,13 +33,14 @@ const getSpacesHandler = async (request: Hapi.Request, h: Hapi.ResponseToolkit) 
       return Boom.notFound('user not found');
     }
 
-    const spaces = await prisma.space.findMany({ where: {
-      usersAllowed: {
-        every: {
-          id
-        }  
-      }
-    }});
+    const spaces = await prisma.space.findMany();
+    // ({ where: {
+    //   usersAllowed: {
+    //     every: {
+    //       id
+    //     }  
+    //   }
+    // }});
 
     return h.response(spaces).code(200);
   } catch (err) {
