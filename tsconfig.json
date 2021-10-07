@@ -6,7 +6,8 @@
     "module": "commonjs",
     "strict": true,
     "lib": ["esnext"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "rootDir": "src"
   },
   "exclude": ["dist", "prisma", "tests"]
 }

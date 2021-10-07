@@ -10,4 +10,27 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model 
+model Space {
+  id            Int           @id @default(autoincrement())
+  name          String
+  maxPeople     Int           @default(1)
+  usersAllowed  User[]        @relation(references: [id])
+  reservations  Reservation[]
+}
+
+model User {
+  id            Int           @id @default(autoincrement())
+  name          String
+  role          String        @default("user")
+  spaces        Space[]       @relation(references: [id])
+  reservations  Reservation[]
+}
+
+model Reservation {
+  id            Int           @id @default(autoincrement())
+  user          User          @relation(references: [id], fields: [userId])
+  space         Space         @relation(references: [id], fields: [spaceId])
+  date          DateTime      @default(now())
+  userId        Int
+  spaceId       Int
+}
