@@ -19,7 +19,7 @@
     "migrate:dev": "prisma migrate dev",
     "migrate:deploy": "prisma migrate deploy",
     "prisma:generate": "prisma generate",
-    "postinstall": "npm run build"
+    "postinstall": "tsc"
   },
   "repository": {
     "type": "git",
