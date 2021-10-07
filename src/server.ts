@@ -8,7 +8,7 @@ dotenv.config();
 
 const server = Hapi.server({
   host: 'localhost',
-  port: process.env.PORT || 3001,
+  port: process.env.PORT || 3137,
 });
 
 export const create = async () => {
