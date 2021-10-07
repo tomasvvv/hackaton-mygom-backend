@@ -7,7 +7,7 @@ import prismaPlugin from './plugins/prismaPlugin';
 dotenv.config();
 
 const server = Hapi.server({
-  host: 'localhost',
+  host: process.env.HOST || '0.0.0.0',
   port: process.env.PORT || 3137,
 });
 
@@ -35,7 +35,7 @@ export const start = async () => {
   return server;
 };
 
-process.on('unhandledRejection', (err) => {
-  console.error(err);
-  process.exit(1);
-})
+// process.on('unhandledRejection', (err) => {
+//   console.error(err);
+//   process.exit(1);
+// })
