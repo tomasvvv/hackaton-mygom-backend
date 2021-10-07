@@ -1,6 +1,7 @@
 import Hapi from '@hapi/hapi';
 import Boom from '@hapi/boom';
-import { User } from '.prisma/client';
+import { Space, User } from '.prisma/client';
+import { spacesPlugin } from './spacesPlugin';
 
 export const usersPlugin = {
   name: 'users',
@@ -20,9 +21,14 @@ export const usersPlugin = {
         handler: createUserHandler
       },
       {
-        method: 'POST',
+        method: 'GET',
         path: '/users/spaces',
         handler: getUserSpacesHandler
+      },
+      {
+        method: 'POST',
+        path: '/users/spaces',
+        handler: addUserSpaceHandler
       },
     ]);
   }
@@ -31,7 +37,38 @@ export const usersPlugin = {
 const addUserSpaceHandler = async (request: Hapi.Request, h: Hapi.ResponseToolkit) => {
   const { prisma } = request.server.app;
 
-  
+  try {
+    const { id } = (request.payload || {}) as User;
+    const { spaceId } = request.payload as any;
+
+    const user = await prisma.user.findFirst({where: {
+      id
+    }});
+
+    if(!user) {
+      return Boom.notFound('user not found');
+    }
+
+    const space = await prisma.space.findFirst({where: {
+      id: spaceId
+    }});
+    if(!space) {
+      return Boom.notFound('space not found');
+    }
+
+    const newEntry = await prisma.spaceUser.create({
+      data: {
+        spaceId: spaceId,
+        userId: id
+      }
+    })
+
+    return h.response(newEntry).code(201);
+  }
+  catch(err) {
+    return Boom.internal();
+  }
+
 }
 
 const getUserSpacesHandler = async (request: Hapi.Request, h: Hapi.ResponseToolkit) => { 
@@ -46,15 +83,22 @@ const getUserSpacesHandler = async (request: Hapi.Request, h: Hapi.ResponseToolk
       return Boom.notFound('user not found');
     }
 
-    const spaces = await prisma.space.findMany({
-      where: {
-        User: {
-          every: {
-            id: user.id
-          }
+    const spaceUserEntries = await prisma.spaceUser.findMany({ where: {
+      userId: id
+    }});
+
+    let spaces: Space[] = [];
+
+    Promise.all(spaceUserEntries.map(async (e) => {
+      const space = await prisma.space.findFirst({ 
+        where: {
+          id: e.spaceId
         }
-      }
-    })
+      });
+      
+      if(!space) return;
+      spaces.push(space);
+    }));
 
     return h.response(spaces).code(200);
   } catch(err) {

@@ -12,22 +12,33 @@ model Reservation {
   date    DateTime @default(now())
   userId  Int
   spaceId Int
-  Space   Space    @relation(fields: [spaceId], references: [id])
-  User    User     @relation(fields: [userId], references: [id])
+  space   Space    @relation(fields: [spaceId], references: [id])
+  user    User     @relation(fields: [userId], references: [id])
 }
 
 model Space {
-  id          Int           @id @default(autoincrement())
-  name        String
-  maxPeople   Int           @default(1)
-  Reservation Reservation[]
-  User        User[]
+  id           Int           @id @default(autoincrement())
+  name         String
+  maxPeople    Int           @default(1)
+  reservations Reservation[]
+  users        User[]
+  SpaceUser    SpaceUser[]
 }
 
 model User {
-  id          Int           @id @default(autoincrement())
-  name        String
-  role        String        @default("user")
-  Reservation Reservation[]
-  Space       Space[]
+  id           Int           @id @default(autoincrement())
+  name         String
+  role         String        @default("user")
+  reservations Reservation[]
+  spaces       Space[]
+  SpaceUser    SpaceUser[]
+}
+
+model SpaceUser {
+  id    Int   @id @default(autoincrement())
+  space Space @relation(fields: [spaceId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+
+  spaceId Int
+  userId  Int
 }

@@ -17,7 +17,6 @@ export const spacesPlugin = {
         path: '/spaces',
         handler: createSpaceHandler,
       }
-
     ]);
   }
 };
