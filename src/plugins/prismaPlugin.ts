@@ -11,7 +11,7 @@ const prismaPlugin: Hapi.Plugin<null> = {
   name: 'prisma',
   register: async function (server: Hapi.Server) {
     const prisma = new PrismaClient({
-      log: ['error', 'warn', 'query'],
+      // log: ['error', 'warn', 'query'],
     })
 
     server.app.prisma = prisma;

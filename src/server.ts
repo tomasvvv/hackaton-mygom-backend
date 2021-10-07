@@ -3,12 +3,13 @@ import hapiPino from 'hapi-pino';
 import dotenv from 'dotenv';
 import { spacesPlugin } from './plugins/spacesPlugin';
 import prismaPlugin from './plugins/prismaPlugin';
+import { usersPlugin } from './plugins/usersPlugin';
 
 dotenv.config();
 
 const server = Hapi.server({
   host: process.env.HOST || '0.0.0.0',
-  port: process.env.PORT || 3137,
+  port: process.env.PORT || 5000,
 });
 
 export const create = async () => {
@@ -23,6 +24,7 @@ export const create = async () => {
   await server.register([
     prismaPlugin,
     spacesPlugin,
+    usersPlugin
   ]);
 
   await server.initialize();
@@ -35,7 +37,7 @@ export const start = async () => {
   return server;
 };
 
-// process.on('unhandledRejection', (err) => {
-//   console.error(err);
-//   process.exit(1);
-// })
+process.on('unhandledRejection', (err) => {
+  console.error(err);
+  process.exit(1);
+})
