@@ -95,7 +95,7 @@ const getUserSpacesHandler = async (request: Hapi.Request, h: Hapi.ResponseToolk
           id: e.spaceId
         }
       });
-      
+
       if(!space) return;
       spaces.push(space);
     }));
@@ -111,7 +111,12 @@ const getUsersHandler = async (request: Hapi.Request, h: Hapi.ResponseToolkit) =
   const { prisma } = request.server.app;
 
   try {
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+      include: {
+        spaces: true
+      }
+    });
+    console.log(`users`, users);
     return h.response(users).code(200);
   } catch (err) {
     return Boom.internal();
