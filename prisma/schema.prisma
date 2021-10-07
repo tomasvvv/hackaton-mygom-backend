@@ -1,36 +1,33 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+}
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
+model Reservation {
+  id      Int      @id @default(autoincrement())
+  date    DateTime @default(now())
+  userId  Int
+  spaceId Int
+  Space   Space    @relation(fields: [spaceId], references: [id])
+  User    User     @relation(fields: [userId], references: [id])
 }
 
 model Space {
-  id            Int           @id @default(autoincrement())
-  name          String
-  maxPeople     Int           @default(1)
-  usersAllowed  User[]        @relation(references: [id])
-  reservations  Reservation[]
+  id          Int           @id @default(autoincrement())
+  name        String
+  maxPeople   Int           @default(1)
+  Reservation Reservation[]
+  User        User[]
 }
 
 model User {
-  id            Int           @id @default(autoincrement())
-  name          String
-  role          String        @default("user")
-  spaces        Space[]       @relation(references: [id])
-  reservations  Reservation[]
-}
-
-model Reservation {
-  id            Int           @id @default(autoincrement())
-  user          User          @relation(references: [id], fields: [userId])
-  space         Space         @relation(references: [id], fields: [spaceId])
-  date          DateTime      @default(now())
-  userId        Int
-  spaceId       Int
+  id          Int           @id @default(autoincrement())
+  name        String
+  role        String        @default("user")
+  Reservation Reservation[]
+  Space       Space[]
 }
