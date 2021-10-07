@@ -22,7 +22,7 @@ export const spacesPlugin = {
 const getSpacesHandler = async (request: Hapi.Request, h: Hapi.ResponseToolkit) => {
   const { prisma } = request.server.app;
 
-try {
+  try {
     const { id } = request.params;
 
     const user = await prisma.user.findFirst({ where: {
@@ -41,7 +41,7 @@ try {
       }
     }});
 
-    return h.response(spaces).code(200);  
+    return h.response(spaces).code(200);
   } catch (err) {
     return Boom.badRequest();
   }

@@ -14,7 +14,7 @@ const prismaPlugin: Hapi.Plugin<null> = {
       log: ['error', 'warn', 'query'],
     })
 
-    server.app.prisma = prisma
+    server.app.prisma = prisma;
 
     server.ext({
       type: 'onPostStop',

@@ -7,35 +7,31 @@ import prismaPlugin from './plugins/prismaPlugin';
 dotenv.config();
 
 const server = Hapi.server({
-  port: process.env.PORT || 3001
+  host: 'localhost',
+  port: process.env.PORT || 3001,
 });
 
-
 export const create = async () => {
-  try {
-    // await server.register({
-    //   plugin: hapiPino,
-    //   options: {
-    //     logEvents: true,
-    //     prettyPrint: true,
-    //   }
-    // })
-  
-    await server.register([
-      prismaPlugin,
-      spacesPlugin,
-    ]);
-  
-    await server.initialize();
-  } catch(error) { 
-    console.error(error);
-  }
+  await server.register({
+    plugin: hapiPino,
+    options: {
+      prettyPrint: process.env.NODE_ENV !== 'production',
+      redact: ['req.headers.authorization'],
+    },
+  })
+
+  await server.register([
+    prismaPlugin,
+    spacesPlugin,
+  ]);
+
+  await server.initialize();
   return server;
 }
 
 export const start = async () => {
-  await server.initialize();
-  server.log('info', `server is running on port ${server.info.uri}`);
+  await server.start();
+  console.log('info', `server is running on port ${server.info.uri}`);
   return server;
 };
 
